@@ -31,19 +31,19 @@ This project is deployed on AWS, but if you wish to run it locally or contribute
 
 2. Install the required dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
     ```
 
-3. Set up your AWS and ChatGPT API credentials in a `.env` file in the root directory:
-    ```env
-    AWS_ACCESS_KEY_ID=<Your AWS Access Key ID>
-    AWS_SECRET_ACCESS_KEY=<Your AWS Secret Access Key>
-    CHATGPT_API_KEY=<Your ChatGPT API Key>
+3. Set up your ChatGPT API credentials:
+    ```bash
+    export CHATGPT_API_KEY=<Your-ChatGPT-API-Key>
     ```
 
 4. Run the app:
     ```bash
-    python app.py
+    
+   python app.py "Your prompt here"
+
     ```
 
 ## Usage
