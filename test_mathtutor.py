@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 from mathtutor import MathTutor
-from ChatGPT import ChatGPT
+from service.ChatGPTService import ChatGPT
 
 
 class TestMathTutor(unittest.TestCase):

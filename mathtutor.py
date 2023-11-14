@@ -1,5 +1,4 @@
 import time
-from ChatGPT import ChatGPT
 import re  # Import the regex module
 
 

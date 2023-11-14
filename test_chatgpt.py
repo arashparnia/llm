@@ -1,40 +1,77 @@
 import unittest
-from unittest.mock import MagicMock, patch
-from ChatGPT import ChatGPT
-import openai
+from unittest.mock import patch, Mock
+from service.ChatGPTService import ChatGPTService
 
-class TestChatGPT(unittest.TestCase):
+class TestChatGPTService(unittest.TestCase):
 
     def setUp(self):
-        self.chatgpt = ChatGPT()
+        self.chatgpt = ChatGPTService()
 
-    @patch('openai.ChatCompletion.create')
-    def test_query_success(self, mock_create):
-        # Mock the API response
-        mock_create.return_value = {
-            "choices": [{"message": {"content": "The answer is 5."}}]
+    @patch('requests.post')
+    def test_create_thread_and_run_success(self, mock_post):
+        # Mock the API response for successful thread creation and run
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.json.return_value = {"thread_id": "test_thread_id", "id": "test_run_id"}
+
+        thread_id, run_id = self.chatgpt.create_thread_and_run([{"text": "Hello, world!"}])
+        self.assertEqual(thread_id, "test_thread_id")
+        self.assertEqual(run_id, "test_run_id")
+
+    @patch('requests.get')
+    def test_check_run_status_success(self, mock_get):
+        # Mock the API response for successful run status check
+        mock_get.return_value = Mock(status_code=200)
+        mock_get.return_value.json.return_value = {"status": "completed"}
+
+        status = self.chatgpt.check_run_status("test_run_id", "test_thread_id")
+        self.assertEqual(status, "completed")
+
+    @patch('requests.get')
+    def test_fetch_latest_message_for_thread_success(self, mock_get):
+        # Mock the API response for fetching the latest message
+        mock_get.return_value = Mock(status_code=200)
+        mock_get.return_value.json.return_value = {
+            "data": [{"created_at": "2023-01-01T00:00:00Z", "content": [{"text": {"value": "Test Message"}}]}]
         }
 
-        # Test a successful query
-        response = self.chatgpt.query("What is 2 + 3?")
-        self.assertEqual(response, "The answer is 5.")
+        message = self.chatgpt.fetch_latest_message_for_thread("test_thread_id")
+        self.assertEqual(message, "Test Message")
 
-    @patch('openai.ChatCompletion.create')
-    def test_query_failure(self, mock_create):
-        # Mock an API error
-        mock_create.side_effect = openai.error.OpenAIError("API error")
+    @patch('requests.post')
+    def test_execute_run_success(self, mock_post):
+        # Mock the API response for successful run execution
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.json.return_value = {"id": "test_run_id"}
 
-        # Test a failed query
-        with self.assertRaises(Exception) as context:
-            self.chatgpt.query("What is 2 + 3?")
-        self.assertEqual(str(context.exception), "Failed to query API: API error")
+        run_id = self.chatgpt.execute_run("test_thread_id")
+        self.assertEqual(run_id, "test_run_id")
 
-    def test_query_max_tokens(self):
-        # This test will actually send a query to the API, which is not ideal.
-        # It's here to demonstrate how you might test the max_tokens argument,
-        # but in a real test suite, you would probably want to use mocking.
-        response = self.chatgpt.query("What is 2 + 3?", max_tokens=10)
-        self.assertTrue(isinstance(response, str))
+    @patch('requests.post')
+    def test_create_thread_success(self, mock_post):
+        # Mock the API response for successful thread creation
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.json.return_value = {"id": "test_thread_id"}
+
+        thread_id = self.chatgpt.create_thread([{"text": "Hello, world!"}])
+        self.assertEqual(thread_id, "test_thread_id")
+
+    @patch('requests.post')
+    def test_generate_speech_from_text_success(self, mock_post):
+        # Mock the API response for successful speech generation
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.content = b"audio_data"
+
+        audio_data = self.chatgpt.generate_speech_from_text("Hello, world!")
+        self.assertEqual(audio_data, b"audio_data")
+
+    @patch('requests.post')
+    def test_generate_images_success(self, mock_post):
+        # Mock the API response for successful image generation
+        mock_post.return_value = Mock(status_code=200)
+        mock_post.return_value.json.return_value = {"data": [{"url": "http://example.com/test_image.jpg"}]}
+
+        image_urls = self.chatgpt.generate_images("A happy dog")
+        self.assertEqual(image_urls, ["http://example.com/test_image.jpg"])
 
 if __name__ == '__main__':
     unittest.main()
