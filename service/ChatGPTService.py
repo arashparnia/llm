@@ -5,7 +5,6 @@ from typing import Dict, List, Any
 from openai._base_client import HttpxBinaryResponseContent
 from openai.types.beta import Thread, ThreadDeleted
 from openai.types.beta.threads import ThreadMessage, Run
-from openai.types.chat import ChatCompletion
 
 from models.Completion import ChatMessage
 
@@ -55,23 +54,25 @@ class ChatGPTService:
         """
         return self.client.models.list()
 
-    def create_chat_completion(self, model: str, messages: List[ChatMessage]) -> dict[str, Any]:
+    def create_chat_completion(self, messages: List[dict[str, str]], model: str = "gpt-3.5-turbo-1106") -> dict[str, Any]:
         """
         Create a chat completion using GPT-3.
 
         Args:
             model (str): The GPT-3 model to use for completion.
-            messages (List[ChatMessage]): A list of chat messages in the conversation.
-
+            messages (List[dict[str, str]]): A list of chat messages in the conversation.
         Returns:
             dict: The response from the GPT-3 API.
         """
-        formatted_messages = [message.model_dump() for message in messages]
-        response = self.client.chat.completions.create(model=model, response_format={"type": "json_object"},
-                                                       messages=formatted_messages).model_dump()
+        response = self.client.chat.completions.create(
+            model=model,
+            response_format={"type": "json_object"},
+            messages=messages
+        ).model_dump()
+        print(response)
         return response
 
-    def create_speech(self, text: str) -> HttpxBinaryResponseContent:
+    def create_speech(self, text: str) -> bytes:
         """
         Generate speech from text using GPT-3.
 
@@ -84,10 +85,10 @@ class ChatGPTService:
         response = self.client.audio.speech.create(
             model="tts-1",
             voice="onyx",  # alloy, echo, fable, onyx, nova, and shimmer
-            response_format='aac',
+            response_format='mp3',
             input=text
         )
-        return response
+        return response.content
 
     def create_image(self, text: str) -> str:
         """
@@ -99,6 +100,7 @@ class ChatGPTService:
         Returns:
             str: The generated image data.
         """
+        text += " Make an image with No text or writing for the given scenario."
         response = self.client.images.generate(
             model="dall-e-3",
             prompt=text,
@@ -106,7 +108,9 @@ class ChatGPTService:
             size="1024x1024",
             style="natural"
         )
-        return response["data"]
+        # Access the URL from the first item in the 'data' list
+        generated_image_url = response.data[0].url
+        return generated_image_url
 
     def create_moderation(self, text: str) -> str:
         """

@@ -7,10 +7,12 @@ chatgpt_service = ChatGPTService()
 
 completion_router = APIRouter()
 
+
 @completion_router.get("/list_models")
 def list_models():
     response = chatgpt_service.list_models()
     return response
+
 
 @completion_router.post("/create")
 def create_completion(request: CompletionRequest):

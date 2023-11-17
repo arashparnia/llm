@@ -12,6 +12,12 @@ app = FastAPI(dependencies=[Depends(get_api_key)])
 app.include_router(completion_router, prefix="/completion", tags=["Completion"])
 app.include_router(audio_router, prefix="/audio", tags=["Audio"])
 
+# Health Check Endpoint
+@app.get("/")
+def health_check():
+    return {"status": "healthy"}
+
+
 # Main function to run the app
 if __name__ == "__main__":
     import uvicorn
