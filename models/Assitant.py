@@ -25,3 +25,17 @@ class Run(BaseModel):
 class ToolOutput(BaseModel):
     tool_call_id: str
     output: str
+
+
+class CreateThreadRequest(BaseModel):
+    assistant_id: str = Field(..., example="asst_T7HClKQYmKUNOJmxlKW79XWQ")
+    thread: Optional[Dict] = Field(None, example={
+        "messages": [
+            {"role": "user", "content": "Explain deep learning to a 5 year old."}
+        ]
+    })
+
+
+class CreateMessageRequest(BaseModel):
+    thread_id: str = Field(..., example="")
+    content: str = Field(..., example="")
