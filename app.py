@@ -1,10 +1,10 @@
-from fastapi import FastAPI, HTTPException, Body, APIRouter, Depends, status
+from fastapi import FastAPI, HTTPException, Body, APIRouter, Depends, status,Request
 from fastapi.security.api_key import APIKeyHeader, APIKeyCookie, APIKeyQuery
 from ApiKey import get_api_key
 from routers.Completion import completion_router
 from routers.Audio import audio_router
 from routers.Assitant import assistant_router
-
+from APILogger import APILogger
 # Initialize FastAPI app without global dependencies
 app = FastAPI()
 
@@ -12,6 +12,12 @@ app = FastAPI()
 app.include_router(completion_router, prefix="/completion", tags=["Completion"], dependencies=[Depends(get_api_key)])
 app.include_router(audio_router, prefix="/audio", tags=["Audio"], dependencies=[Depends(get_api_key)])
 app.include_router(assistant_router, prefix="/assistant", tags=["Assistant"], dependencies=[Depends(get_api_key)])
+
+app_logger = APILogger("app")
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    return await app_logger.log_request(request, call_next)
+
 
 # Health Check Endpoint (no API key required)
 @app.get("/")
