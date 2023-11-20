@@ -5,6 +5,7 @@ from routers.Completion import completion_router
 from routers.Audio import audio_router
 from routers.Assitant import assistant_router
 from APILogger import APILogger
+from block_path import blocked_paths
 # Initialize FastAPI app without global dependencies
 app = FastAPI()
 
@@ -17,6 +18,16 @@ app_logger = APILogger("app")
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     return await app_logger.log_request(request, call_next)
+
+
+
+
+@app.middleware("http")
+async def block_404_requests(request: Request, call_next):
+    if request.url.path in blocked_paths:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    response = await call_next(request)
+    return response
 
 
 # Health Check Endpoint (no API key required)
