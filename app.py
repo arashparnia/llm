@@ -4,6 +4,7 @@ from ApiKey import get_api_key
 from routers.Completion import completion_router
 from routers.Audio import audio_router
 from routers.Assitant import assistant_router
+from routers.GPT4All import gpt4all_router
 from APILogger import APILogger
 from block_path import blocked_paths
 # Initialize FastAPI app without global dependencies
@@ -13,6 +14,7 @@ app = FastAPI()
 app.include_router(completion_router, prefix="/completion", tags=["Completion"], dependencies=[Depends(get_api_key)])
 app.include_router(audio_router, prefix="/audio", tags=["Audio"], dependencies=[Depends(get_api_key)])
 app.include_router(assistant_router, prefix="/assistant", tags=["Assistant"], dependencies=[Depends(get_api_key)])
+app.include_router(gpt4all_router, prefix="/gpt4all", tags=["gpt4all"], dependencies=[Depends(get_api_key)])
 
 app_logger = APILogger("app")
 @app.middleware("http")

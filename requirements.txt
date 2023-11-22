@@ -6,3 +6,4 @@ fastapi
 uvicorn
 pillow
 streamlit
+gpt4all
