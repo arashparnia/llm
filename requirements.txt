@@ -6,5 +6,4 @@ fastapi
 uvicorn
 pillow
 streamlit
-gpt4all
 google-generativeai
