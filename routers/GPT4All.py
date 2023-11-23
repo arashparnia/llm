@@ -10,8 +10,8 @@ class GenerateTextRequest(BaseModel):
 
 
 gpt4all_router = APIRouter()
-# gpt4all_service = GPT4AllWrapper("orca-mini-3b-gguf2-q4_0.gguf")  # Replace with your desired model name
-gpt4all_service = GPT4AllWrapper("nous-hermes-llama2-13b.Q4_0.gguf")  # Replace with your desired model name
+gpt4all_service = GPT4AllWrapper("orca-mini-3b-gguf2-q4_0.gguf")  # Replace with your desired model name
+# gpt4all_service = GPT4AllWrapper("nous-hermes-llama2-13b.Q4_0.gguf")  # Replace with your desired model name
 
 
 @gpt4all_router.post("/generate_text")
