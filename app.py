@@ -6,7 +6,6 @@ from ApiKey import get_api_key
 from routers.Completion import completion_router
 from routers.Audio import audio_router
 from routers.Assitant import assistant_router
-from routers.GPT4All import gpt4all_router
 from routers.GoogleGenerativeAI import  GoogleGenerativeAI_router
 from block_path import blocked_paths
 # Initialize FastAPI app without global dependencies
