@@ -1,11 +1,13 @@
 from fastapi import FastAPI, HTTPException, Body, APIRouter, Depends, status,Request
 from fastapi.security.api_key import APIKeyHeader, APIKeyCookie, APIKeyQuery
+
+from APILogger import APILogger
 from ApiKey import get_api_key
 from routers.Completion import completion_router
 from routers.Audio import audio_router
 from routers.Assitant import assistant_router
 from routers.GPT4All import gpt4all_router
-from APILogger import APILogger
+from routers.GoogleGenerativeAI import  GoogleGenerativeAI_router
 from block_path import blocked_paths
 # Initialize FastAPI app without global dependencies
 app = FastAPI()
@@ -15,6 +17,7 @@ app.include_router(completion_router, prefix="/completion", tags=["Completion"],
 app.include_router(audio_router, prefix="/audio", tags=["Audio"], dependencies=[Depends(get_api_key)])
 app.include_router(assistant_router, prefix="/assistant", tags=["Assistant"], dependencies=[Depends(get_api_key)])
 app.include_router(gpt4all_router, prefix="/gpt4all", tags=["gpt4all"], dependencies=[Depends(get_api_key)])
+app.include_router(GoogleGenerativeAI_router, prefix="/GoogleGenerativeAI", tags=["GoogleGenerativeAI"], dependencies=[Depends(get_api_key)])
 
 app_logger = APILogger("app")
 @app.middleware("http")
