@@ -10,7 +10,7 @@ GoogleGenerativeAI_router = APIRouter()
 google_generative_ai_service = GoogleGenerativeAIWrapper()
 @GoogleGenerativeAI_router.post("/generate_text")
 async def generate_text(request: GenerateTextRequest):
-    response = google_generative_ai_service.generate_text(request.prompt, request.max_tokens)
+    response = google_generative_ai_service.generate_text(request.prompt)
     return response
 
 
