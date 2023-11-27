@@ -95,32 +95,30 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
               Returns:
                   dict: A dictionary with keys 'exercise' and 'answer', containing the extracted texts.
               """
+        # Case 1: If response is a JSON string, parse it into a dictionary
         if isinstance(response, str):
             try:
-                response = json.loads(response)
+                # Try to directly parse the JSON string
+                response_dict = json.loads(response)
             except json.JSONDecodeError:
-                return {"exercise": None, "answer": None}
-
-        # Check if response is a dictionary and has a 'content' key
-        if isinstance(response, dict) and "content" in response:
-            content = response["content"]
-
-            # Use regular expression to extract JSON string
-            json_string_match = re.search(r"```json\n(\{.*?\})\n```", content, re.DOTALL)
-            if json_string_match:
-                json_string = json_string_match.group(1)
+                # If direct parsing fails, try removing extra characters
+                cleaned_response = response.replace("```json", "").replace("```", "").strip()
                 try:
-                    data = json.loads(json_string)
-                    return {"exercise": data.get("exercise"), "answer": data.get("answer")}
+                    response_dict = json.loads(cleaned_response)
                 except json.JSONDecodeError:
-                    return {"exercise": None, "answer": None}
-            else:
-                # Handle case where content does not match expected format
-                return {"exercise": None, "answer": None}
-        else:
-            # Handle case where response is not in expected format
-            return {"exercise": None, "answer": None}
+                    return {"error": "JSON decode error"}
 
+        # Case 2: If response is already a dictionary
+        elif isinstance(response, dict):
+            response_dict = response
+        else:
+            return {"error": "Invalid response type"}
+
+        # Extract exercise and answer from the dictionary
+        return {
+            "exercise": response_dict.get("exercise", "Exercise not found"),
+            "answer": response_dict.get("answer", "Answer not found")
+        }
 
     @staticmethod
     def _create_expanded_age_prompt(age, difficulty, scenario, character):
