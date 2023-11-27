@@ -145,13 +145,16 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
         age_descriptor, focus = age_focus[age_group]
 
         # Crafting a detailed and immersive prompt
-        prompt = (
-            f"In a {age_descriptor} world of '{scenario}', you and a character named '{character}' discover a series "
-            f"of challenges."
-            f"These tasks involve {focus} and are perfectly suited for someone aged {age}. "
-            f"With a '{difficulty}' level of complexity, help {character} navigate these puzzles, "
-            f"applying your knowledge and skills to explore the depths of '{scenario}'. "
-            f"Join {character} in this unique and educational journey, tailored just for you!"
-        )
+        prompt = f"""
+                In a {age_descriptor} world of '{scenario}', you and a character named '{character}' discover a series 
+                of challenges. These tasks involve {focus} and are perfectly suited for someone aged {age}. 
+                With a '{difficulty}' level of complexity, help {character} navigate these puzzles, 
+                applying your knowledge and skills to explore the depths of '{scenario}'. 
+                Join {character} in this unique and educational journey, tailored just for you! 
+                Respond with a json formatted {{\"exercise\": exercise, \"answer\": answer}}
+            """
+
+
+
 
         return prompt
