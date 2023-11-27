@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 from service.factories.ContentFactory import ContentFactory
@@ -14,6 +15,7 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
          google_generative_ai_service: An instance of the Google Generative AI service class
                                        used for content generation.
      """
+
     def __init__(self, google_generative_ai_service):
         """
               Initializes the GoogleGenerativeAIServiceFactory with a Google Generative AI service instance.
@@ -65,7 +67,7 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
         logging.info("Generated Exercise Text: %s", exercise_text)
 
         # Process the response to extract exercise and answer
-        return exercise_text
+        return GoogleGenerativeAIServiceFactory._extract_exercise_and_answer_using_regex(exercise_text)
 
     def generate_multiple_choice_question(self, subject, topic, difficulty):
         """
@@ -83,30 +85,30 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
         pass
 
     @staticmethod
-    def _extract_exercise_and_answer_using_regex(content):
+    def _extract_exercise_and_answer_using_regex(response):
         """
               Extracts the exercise and its answer from the given content using regular expressions.
 
               Args:
-                  content (str): The content containing the exercise and answer.
+                  response (str): The content containing the exercise and answer.
 
               Returns:
                   dict: A dictionary with keys 'exercise' and 'answer', containing the extracted texts.
               """
-        # Regular expression pattern to capture text after "**Exercise:**" and "**Answer:**"
-        pattern = r"\*\*Exercise:\*\*\s*(.*?)\s*\*\*Answer:\*\*\s*(.*)"
+        # Parsing the new response to extract the exercise and answer
 
-        # Search for the pattern in the content
-        match = re.search(pattern, content, re.DOTALL)
+        # Using the same approach as before to extract and parse the JSON string
+        json_string_match = re.search(r"```json\n(\{.*?\})\n```", response["content"], re.DOTALL)
 
-        if match:
-            # Extract exercise and answer from the matched groups
-            exercise = match.group(1).strip()
-            answer = match.group(2).strip()
-            return {"exercise": exercise, "answer": answer}
+        if json_string_match:
+            json_string = json_string_match.group(1)
+
+            # Converting the JSON string to a Python dictionary
+            extracted_data = json.loads(json_string)
         else:
-            # Return None if no match is found
-            return {"exercise": None, "answer": None}
+            extracted_data = {"exercise": None, "answer": None}
+
+        return extracted_data
 
     @staticmethod
     def _create_expanded_age_prompt(age, difficulty, scenario, character):
@@ -150,11 +152,8 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
                 of challenges. These tasks involve {focus} and are perfectly suited for someone aged {age}. 
                 With a '{difficulty}' level of complexity, help {character} navigate these puzzles, 
                 applying your knowledge and skills to explore the depths of '{scenario}'. 
-                Join {character} in this unique and educational journey, tailored just for you! 
+                Provide a vivid description of the background story first as part of the exercise.
                 Respond with a json formatted {{\"exercise\": exercise, \"answer\": answer}}
             """
-
-
-
 
         return prompt
