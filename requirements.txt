@@ -8,3 +8,4 @@ pillow
 streamlit
 google-generativeai
 gpt4all
+demjson3

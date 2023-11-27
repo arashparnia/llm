@@ -1,4 +1,4 @@
-import json
+import demjson3
 import logging
 import re
 from service.factories.ContentFactory import ContentFactory
@@ -99,13 +99,13 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
         if isinstance(response, str):
             try:
                 # Try to directly parse the JSON string
-                response_dict = json.loads(response)
-            except json.JSONDecodeError:
+                response_dict = demjson3.decode(response)
+            except demjson3.JSONDecodeError:
                 # If direct parsing fails, try removing extra characters
                 cleaned_response = response.replace("```json", "").replace("```", "").strip()
                 try:
-                    response_dict = json.loads(cleaned_response)
-                except json.JSONDecodeError:
+                    response_dict = demjson3.decode(cleaned_response)
+                except demjson3.JSONDecodeError:
                     return {"error": "JSON decode error"}
 
         # Case 2: If response is already a dictionary
@@ -158,11 +158,12 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
 
         # Crafting a detailed and immersive prompt
         prompt = f"""
-                In a {age_descriptor} world of '{scenario}', you and a character named '{character}' discover a series 
+                In a {age_descriptor} world of '{scenario}', '{character}' discovers a series 
                 of challenges. These tasks involve {focus} and are perfectly suited for someone aged {age}. 
-                With a '{difficulty}' level of complexity, help {character} navigate these puzzles, 
+                With a '{difficulty}' level of complexity, help {character} navigate these puzzles by 
                 applying your knowledge and skills to explore the depths of '{scenario}'. 
                 Provide a vivid description of the background story first as part of the exercise.
+                and only a numerical or one word response for the answer.
                 Respond with a json formatted {{\"exercise\": exercise, \"answer\": answer}}
             """
 
