@@ -95,20 +95,32 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
               Returns:
                   dict: A dictionary with keys 'exercise' and 'answer', containing the extracted texts.
               """
-        # Parsing the new response to extract the exercise and answer
+        if isinstance(response, str):
+            try:
+                response = json.loads(response)
+            except json.JSONDecodeError:
+                return {"exercise": None, "answer": None}
 
-        # Using the same approach as before to extract and parse the JSON string
-        json_string_match = re.search(r"```json\n(\{.*?\})\n```", response["content"], re.DOTALL)
+        # Check if response is a dictionary and has a 'content' key
+        if isinstance(response, dict) and "content" in response:
+            content = response["content"]
 
-        if json_string_match:
-            json_string = json_string_match.group(1)
-
-            # Converting the JSON string to a Python dictionary
-            extracted_data = json.loads(json_string)
+            # Use regular expression to extract JSON string
+            json_string_match = re.search(r"```json\n(\{.*?\})\n```", content, re.DOTALL)
+            if json_string_match:
+                json_string = json_string_match.group(1)
+                try:
+                    data = json.loads(json_string)
+                    return {"exercise": data.get("exercise"), "answer": data.get("answer")}
+                except json.JSONDecodeError:
+                    return {"exercise": None, "answer": None}
+            else:
+                # Handle case where content does not match expected format
+                return {"exercise": None, "answer": None}
         else:
-            extracted_data = {"exercise": None, "answer": None}
+            # Handle case where response is not in expected format
+            return {"exercise": None, "answer": None}
 
-        return extracted_data
 
     @staticmethod
     def _create_expanded_age_prompt(age, difficulty, scenario, character):
