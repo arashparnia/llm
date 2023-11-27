@@ -65,7 +65,7 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
         logging.info("Generated Exercise Text: %s", exercise_text)
 
         # Process the response to extract exercise and answer
-        return GoogleGenerativeAIServiceFactory._extract_exercise_and_answer_using_regex(exercise_text)
+        return exercise_text
 
     def generate_multiple_choice_question(self, subject, topic, difficulty):
         """
