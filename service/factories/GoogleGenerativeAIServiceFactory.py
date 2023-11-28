@@ -158,12 +158,15 @@ class GoogleGenerativeAIServiceFactory(ContentFactory):
 
         # Crafting a detailed and immersive prompt
         prompt = f"""
+                Create a vivid highly detailed story based on this scenario:
                 In a {age_descriptor} world of '{scenario}', '{character}' discovers a series 
                 of challenges. These tasks involve {focus} and are perfectly suited for someone aged {age}. 
-                With a '{difficulty}' level of complexity, help {character} navigate these puzzles by 
+                With a '{difficulty}' level of complexity. {character} navigates these puzzles by 
                 applying your knowledge and skills to explore the depths of '{scenario}'. 
-                Provide a vivid description of the background story first as part of the exercise.
-                and only a numerical or one word response for the answer.
+                Generate a detailed exercise based on the story in which the {character} has to solve in order to
+                advance in the adventure.
+                Your response must contain an exercise question followed by 
+                an answer that is only numerical or one word.
                 Respond with a json formatted {{\"exercise\": exercise, \"answer\": answer}}
             """
 
