@@ -49,14 +49,6 @@ async def block_404_requests(request: Request, call_next):
 
 
 
-# Serve files from the 'static' directory under the '/static' route
-app.mount("/", StaticFiles(directory="static"), name="static")
-
-@app.get("/")
-async def read_root():
-    return FileResponse('static/index.html')
-
-
 
 
 # Main function to run the app
