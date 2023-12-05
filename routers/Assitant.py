@@ -1,9 +1,8 @@
-from typing import Optional, Dict, List
 
 # API Endpoints
 from fastapi import APIRouter
 from service.ChatGPTService import ChatGPTService  # Replace with your actual import
-from models.Assitant import Thread, Run, ToolOutput, CreateThreadRequest,CreateMessageRequest
+from models.Assitant import CreateThreadRequest, CreateMessageRequest
 
 assistant_router = APIRouter()
 chatgpt_service = ChatGPTService()

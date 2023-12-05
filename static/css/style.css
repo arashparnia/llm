@@ -1,0 +1,174 @@
+/* Reset some basic elements */
+body, html {
+    font-family: 'Indie Flower', cursive;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    text-align: center;
+}
+
+.blurry-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/img/bg.png');
+
+    background-position: center;
+    background-repeat: repeat;
+    filter: blur(8px);
+    z-index: -1; /* Places the background behind the content */
+}
+
+.content-container {
+    position: relative;
+    z-index: 1; /* Ensures content is above the background */
+    /* Other styling for your content */
+}
+
+
+/* Apply this class to your main content div in HTML */
+
+
+/* Simple responsive image */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Style for the header */
+header {
+    background-color: #f8f8f8;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* Navigation styles */
+nav {
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0 15px;
+    font-weight: bold;
+}
+
+nav a.active, nav a:hover {
+    color: #4CAF50;
+}
+
+/* Main content styles */
+main {
+    padding: 20px;
+    background-color: #eaeaea;
+}
+
+/* About section styles */
+.about-section {
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.about-section h1 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.about-section p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.about-section h2 {
+    color: #333;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.about-section ul {
+    list-style-type: none;
+}
+
+.about-section ul li {
+    background: url('static/assets/img/checkmark.png') no-repeat left center;
+    padding-left: 30px;
+    margin-bottom: 5px;
+}
+
+/* Call to action button */
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #45a049;
+}
+
+/* Footer styles */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    nav a {
+        display: block;
+        padding: 10px;
+    }
+}
+
+/* Adjusting the main content background to be semi-transparent */
+.main, .about-section, footer, header, nav {
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent white */
+    /* This makes the background 50% transparent. Adjust the 0.5 value for more or less transparency */
+}
+
+/* If you have other elements with a white background, add them to the list above and apply the same style */
+
+/* You can also apply different fonts to different parts, like headers */
+h1, h2 {
+    font-family: 'Merriweather', serif;
+    /* Additional header styles */
+}
+
+/* For list items or specific sections, you might choose another font */
+.about-section ul li {
+    font-family: 'Amatic SC', cursive;
+    /* Additional styles */
+}
+
+p, li {
+    color: #333;
+    line-height: 1.6;
+    /* Example of additional fun style */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+h1, h2 {
+    color: #4CAF50; /* Example of a fun color */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}

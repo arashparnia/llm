@@ -11,6 +11,9 @@ from routers.Audio import audio_router
 from routers.Assitant import assistant_router
 from routers.GoogleGenerativeAI import  GoogleGenerativeAI_router
 from block_path import blocked_paths
+from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 # Initialize FastAPI app without global dependencies
 app = FastAPI()
 # Configure logging
@@ -40,9 +43,22 @@ async def block_404_requests(request: Request, call_next):
     response = await call_next(request)
     return response
 
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+
+# Serve files from the 'static' directory under the '/static' route
+app.mount("/", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def read_root():
+    return FileResponse('static/index.html')
+
 
 # Health Check Endpoint (no API key required)
-@app.get("/")
+@app.get("/health")
 def health_check():
     return {"status": "healthy"}
 

@@ -1,12 +1,11 @@
 import os
+import time
+
 from openai import OpenAI
 from typing import Dict, List, Any
 
-from openai._base_client import HttpxBinaryResponseContent
 from openai.types.beta import Thread, ThreadDeleted
 from openai.types.beta.threads import ThreadMessage, Run
-
-from models.Completion import ChatMessage
 
 
 class ChatGPTService:
@@ -54,7 +53,9 @@ class ChatGPTService:
         """
         return self.client.models.list()
 
-    def create_chat_completion(self, messages: List[dict[str, str]], model: str = "gpt-3.5-turbo-1106") -> dict[str, Any]:
+    def create_chat_completion(self,
+                               messages: List[dict[str, str]],
+                               model: str = "gpt-3.5-turbo-1106") -> dict[str, Any]:
         """
         Create a chat completion using GPT-3.
 
@@ -220,6 +221,45 @@ class ChatGPTService:
             Run: The created run.
         """
         return self.client.beta.threads.runs.create(thread_id=thread_id, assistant_id=assistant_id)
+
+    def wait_for_run_completion(self, thread_id: str, run_id: str):
+        """
+        Wait for a run within a conversation thread to complete or handle other possible statuses.
+
+        Args:
+            thread_id (str): The ID of the conversation thread.
+            run_id (str): The ID of the run to wait for.
+
+        Returns:
+            str: The result of the run when it completes successfully, or an appropriate message for other statuses.
+        """
+        while True:
+            run = self.retrieve_run(thread_id, run_id)
+            status = run.status
+            if status == "completed":
+                # Run has successfully completed, return the result
+                return run.messages[-1].content if run.messages else "No response from the run."
+            elif status == "failed":
+                # Handle the case where the run has failed
+                return "Run failed. Check run details for more information."
+            elif status == "cancelling":
+                # Handle the case where the run is being cancelled
+                return "Run is currently being cancelled."
+            elif status == "cancelled":
+                # Handle the case where the run has been cancelled
+                return "Run has been cancelled."
+            elif status == "requires_action":
+                # Handle the case where the run requires action
+                return "Run requires action. Check run details for more information."
+            elif status == "in_progress":
+                # Handle the case where the run is still in progress
+                time.sleep(5)  # Wait for 5 seconds before checking again
+            elif status == "expired":
+                # Handle the case where the run has expired
+                return "Run has expired. Check run details for more information."
+            else:
+                # Handle any other unknown status
+                return f"Unknown run status: {status}"
 
     def retrieve_run(self, thread_id: str, run_id: str) -> Run:
         """
