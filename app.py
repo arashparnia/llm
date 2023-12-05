@@ -1,5 +1,4 @@
-from fastapi import FastAPI, HTTPException, Body, APIRouter, Depends, status,Request
-from fastapi.security.api_key import APIKeyHeader, APIKeyCookie, APIKeyQuery
+from fastapi import  HTTPException, Depends
 import logging
 
 
@@ -11,15 +10,20 @@ from routers.Audio import audio_router
 from routers.Assitant import assistant_router
 from routers.GoogleGenerativeAI import  GoogleGenerativeAI_router
 from block_path import blocked_paths
-from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-# Initialize FastAPI app without global dependencies
-app = FastAPI()
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
 # Configure logging
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
+app = FastAPI()
+# Health Check Endpoint (no API key required)
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
 
 # Include your routers with the API key dependency
 app.include_router(content_router, prefix="/content", tags=["Content"], dependencies=[Depends(get_api_key)])
@@ -43,11 +47,7 @@ async def block_404_requests(request: Request, call_next):
     response = await call_next(request)
     return response
 
-from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
 
 # Serve files from the 'static' directory under the '/static' route
 app.mount("/", StaticFiles(directory="static"), name="static")
@@ -57,10 +57,7 @@ async def read_root():
     return FileResponse('static/index.html')
 
 
-# Health Check Endpoint (no API key required)
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}
+
 
 # Main function to run the app
 if __name__ == "__main__":
