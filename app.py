@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S')
 app = FastAPI()
 # Health Check Endpoint (no API key required)
-@app.get("/health")
+@app.get("/")
 def health_check():
     return {"status": "healthy"}
 
