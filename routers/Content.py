@@ -7,6 +7,24 @@ from models.Completion import CompletionRequest
 from service.factories.ChatGPTServiceFactory import ChatGPTServiceFactory
 from service.factories.GoogleGenerativeAIServiceFactory import GoogleGenerativeAIServiceFactory
 from service.ExerciseGenerator import ExerciseGenerator
+from enum import Enum
+from fastapi import HTTPException, APIRouter, Body, Path, Query
+
+
+# Define Enums for service_type and content_type
+class ServiceType(str, Enum):
+    chatgpt = "ChatGPT"
+    google_generative_ai = "GoogleGenerativeAI"
+
+
+class ContentType(str, Enum):
+    story = "story"
+    exercise = "exercise"
+    multiple_choice_question = "multiple_choice_question"
+
+
+# Your existing service and model imports
+# ...
 
 chatgpt_service = ChatGPTService()
 google_generative_ai_service = GoogleGenerativeAIWrapper()
@@ -14,7 +32,11 @@ content_router = APIRouter()
 
 
 @content_router.post('/generate-content')
-def generate_content(service_type: str, content_type: str, params: dict = Body(...)):
+def generate_content(service_type: ServiceType = Query(..., description="The service to use for content generation"),
+                     content_type: ContentType = Query(..., description="The type of content to generate"),
+                     params: dict = Body(...)):
+
+
     try:
         # Choose the correct factory based on the service type
         if service_type == "ChatGPT":
