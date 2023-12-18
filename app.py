@@ -24,11 +24,11 @@ app.mount("/site", StaticFiles(directory="static", html=True), name="static")
 
 
 # Redirect to the static site's index.html
-@app.get("/site")
+@app.get("/")
 async def redirect_to_site():
     return RedirectResponse(url="/site/index.html")
 # Health Check Endpoint (no API key required)
-@app.get("/")
+@app.get("/health")
 def health_check():
     return {"status": "healthy"}
 
