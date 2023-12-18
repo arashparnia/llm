@@ -19,6 +19,14 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 app = FastAPI()
+# Serve static files from /site/
+app.mount("/site", StaticFiles(directory="static", html=True), name="static")
+
+
+# Redirect to the static site's index.html
+@app.get("/site")
+async def redirect_to_site():
+    return RedirectResponse(url="/site/index.html")
 # Health Check Endpoint (no API key required)
 @app.get("/")
 def health_check():

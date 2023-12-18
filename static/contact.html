@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact MAGICAL_Academy</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Add CSS styles to make the email link fancy */
+        .contact-email {
+            font-size: 24px; /* Adjust the font size as needed */
+            font-weight: bold; /* Make the text bold */
+            color: #0073e6; /* Set the link color to blue (you can choose your own color) */
+            text-decoration: none; /* Remove underline */
+        }
+
+        /* Style for hover effect (optional) */
+        .contact-email:hover {
+            text-decoration: underline; /* Add underline on hover (optional) */
+        }
+    </style>
 </head>
 <body>
   <div class="blurry-background"></div>
@@ -24,18 +38,8 @@
         <section class="contact-section">
             <h1>Contact Us</h1>
             <p>Have questions or feedback? Get in touch with MAGICAL_Academy!</p>
-            <form action="submit_form_url" method="post">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" required></textarea>
-
-                <input type="submit" value="Send Message">
-            </form>
+            <!-- Display the email address as a clickable link -->
+            <a href="mailto:info@magical-academy.com" class="contact-email">info@magical-academy.com</a>
         </section>
     </main>
     <footer>
